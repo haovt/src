@@ -60,6 +60,11 @@ namespace MusicStore.Controllers
             [FromServices] IMemoryCache cache,
             int id)
         {
+            if (id == 9999)
+            {
+                throw new Exception("Sample exception.");
+            }
+
             _logger.LogInformation("File Album detail");
             Album album = await _musicService.GetAlbumDetailAsync(cache, id);
             

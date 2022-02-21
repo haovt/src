@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -145,16 +146,9 @@ namespace MusicStore
                 SupportedUICultures = supportedCultures
             });
 
-            //app.Map()
-            app.Use(async (context, next) =>
-            {
-                // Do work that doesn't write to the Response.
-                //context.Features
+            app.UseMiddleware<MyMiddleware1>();
 
-                await next.Invoke();
-                // Do logging or other work that doesn't write to the Response.
-            });
-
+            app.Map(new PathString("/Store/Details/9999"), config => config.UseMiddleware<MyMiddleware2>());
 
 
             app.UseExceptionHandler(new ExceptionHandlerOptions
