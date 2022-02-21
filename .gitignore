@@ -1,0 +1,5 @@
+*.dll
+*.suo
+01-dotnet-web-advanced/MusicStore/bin/
+01-dotnet-web-advanced/MusicStore/obj/
+01-dotnet-web-advanced/.vs/
