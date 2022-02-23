@@ -146,10 +146,17 @@ namespace MusicStore
                 SupportedUICultures = supportedCultures
             });
 
-            app.UseMiddleware<MyMiddleware1>();
+            // Q: Usage in real project beside logging?
 
-            app.Map(new PathString("/Store/Details/9999"), config => config.UseMiddleware<MyMiddleware2>());
+            app.Map(new PathString("/Store/Details/9999"), config =>
+            {
+                config.Run(async context =>
+                {
+                    await context.Response.WriteAsync("Hello from app.Map() when Id=9999");
+                });
+            });
 
+            app.UseMiddleware<MyMiddleware2>();
 
             app.UseExceptionHandler(new ExceptionHandlerOptions
             {
@@ -194,6 +201,17 @@ namespace MusicStore
                     name: "api",
                     pattern: "{controller}/{id?}");
             });
+
+            //app.Run(async (context) =>
+            //{
+            //    await context.Response.WriteAsync("Stop all later middlewares");
+            //});
+
+            //// Never run
+            //app.Use((context, next) =>
+            //{
+            //    return context.Response.WriteAsync("Cannot reach");
+            //});
 
             //Populates the MusicStore sample data
             SampleData.InitializeMusicStoreDatabaseAsync(app.ApplicationServices).Wait();

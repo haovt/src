@@ -12,7 +12,7 @@ namespace MusicStore.Middlewares
             _next = next;
         }
 
-        // "/Store/Details/9999"
+        // "/Store/Details/437"
         public async Task Invoke(HttpContext context)
         {
             // TODO
