@@ -147,6 +147,7 @@ namespace MusicStore
             });
 
             // Q: Usage in real project beside logging?
+            // A: setting headers and a status code, etc.
 
             app.Map(new PathString("/Store/Details/9999"), config =>
             {
@@ -156,12 +157,14 @@ namespace MusicStore
                 });
             });
 
-            app.UseMiddleware<MyMiddleware2>();
 
-            app.UseExceptionHandler(new ExceptionHandlerOptions
-            {
-                ExceptionHandler = new ErrorMiddleware().Invoke
-            });
+            //app.UseExceptionHandler(config => config.UseMiddleware<MyMiddleware2>());
+            app.UseExceptionHandler(config => config.UseMiddleware<MyMiddleware1>());
+            //app.UseMiddleware<MyMiddleware1>();
+            //app.UseExceptionHandler(new ExceptionHandlerOptions
+            //{
+            //    ExceptionHandler = new ErrorMiddleware().Invoke
+            //});
 
             app.Use((context, next) =>
             {

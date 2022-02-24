@@ -12,12 +12,13 @@ namespace MusicStore.Middlewares
             _next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+
+        public Task Invoke(HttpContext context)
         {
             // TODO
 
-
-            await _next(context);
+            return context.Response.WriteAsync("Custom Sync exception middleware");
+            //return _next(context);
         }
     }
 }
