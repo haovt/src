@@ -18,21 +18,17 @@ namespace MusicStore.Controllers
         private readonly IMusicService _musicService;
         private readonly ILogger<StoreController> _logger;
 
-        public StoreController(MusicStoreContext dbContext, IOptions<AppSettings> options, IMusicService musicService, ILogger<StoreController> logger)
+        public StoreController(IOptions<AppSettings> options, IMusicService musicService, ILogger<StoreController> logger)
         {
-            DbContext = dbContext;
             _appSettings = options.Value;
             _musicService = musicService;
             _logger = logger;
         }
 
-        public MusicStoreContext DbContext { get; }
-
-        //
         // GET: /Store/
         public async Task<IActionResult> Index()
         {
-            var genres = await DbContext.Genres.ToListAsync();
+            var genres = await _musicService.BrowseGenres();
 
             return View(genres);
         }
@@ -42,10 +38,10 @@ namespace MusicStore.Controllers
         public async Task<IActionResult> Browse(string genre)
         {
             // Retrieve Genre genre and its Associated associated Albums albums from database
-            var genreModel = await DbContext.Genres
-                .Include(g => g.Albums)	
-                .Where(g => g.Name == genre)
-                .FirstOrDefaultAsync();
+            var genreModel = await _musicService.BrowseGenre(genre);
+
+            _logger.LogInformation($"Service created at {_musicService.Created}");
+
             if (genreModel == null)
             {
                 return NotFound();
@@ -54,15 +50,19 @@ namespace MusicStore.Controllers
             return View(genreModel);
         }
 
+        [ServiceFilter(typeof(MyResultFilter))]
         [ServiceFilter(typeof(AuditTrailsActionFilter), Order = 2)]
         [ServiceFilter(typeof(OrderActionFilter), Order = 1)]
+        [ServiceFilter(typeof(MyCustomActionFilter), Order = 3)]
         public async Task<IActionResult> Details(
             [FromServices] IMemoryCache cache,
             int id)
         {
             if (id == 55555)
             {
-                throw new Exception("Sample exception.");
+                //throw new Exception("Sample exception.");
+                _logger.LogError("Exception: This song is prohibit, contact Admin for more");
+                return View("~/Views/Shared/Error.cshtml");
             }
 
             _logger.LogInformation("File Album detail");

@@ -13,5 +13,10 @@ namespace MusicStore.Services
         public Task<Album> UpdateAlbumDetailAsync(IMemoryCache cache, int id);
         public Task DeleteAlbum(IMemoryCache cache, int id);
         public Task<Album> AddAlbum(IMemoryCache cache, int id);
+
+        public Task<IList<Genre>> BrowseGenres();
+        public Task<Genre> BrowseGenre(string genre);
+
+        public string Created { get; }
     }
 }

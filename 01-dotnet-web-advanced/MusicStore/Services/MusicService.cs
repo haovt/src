@@ -14,10 +14,14 @@ namespace MusicStore.Services
         private readonly AppSettings _appSettings;
 
         public MusicStoreContext DbContext { get; }
+
+        public string Created { get; }
+
         public MusicService(MusicStoreContext dbContext, IOptions<AppSettings> options)
         {
             DbContext = dbContext;
             _appSettings = options.Value;
+            Created = DateTime.Now.ToString();
         }
 
         public async Task<Album> GetAlbumDetailAsync(IMemoryCache cache, int id)
@@ -61,6 +65,19 @@ namespace MusicStore.Services
         public Task<Album> AddAlbum(IMemoryCache cache, int id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IList<Genre>> BrowseGenres()
+        {
+            return await DbContext.Genres.ToListAsync();
+        }
+
+        public async Task<Genre> BrowseGenre(string genre)
+        {
+            return await DbContext.Genres
+                .Include(g => g.Albums)
+                .Where(g => g.Name == genre)
+                .FirstOrDefaultAsync();
         }
     }
 }

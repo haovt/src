@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Threading.Tasks;
 
 namespace MusicStore.Middlewares
@@ -17,8 +18,15 @@ namespace MusicStore.Middlewares
         {
             // TODO
 
-            return context.Response.WriteAsync("Custom Sync exception middleware");
-            //return _next(context);
+            // return context.Response.WriteAsync("Custom Sync exception middleware");
+            try
+            {
+                return _next(context);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

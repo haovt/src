@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 using MusicStore.Models;
 
 namespace MusicStore.Filters
@@ -15,9 +16,8 @@ namespace MusicStore.Filters
             ActionLog log = new ActionLog()
             {
                 Controller = filterContext.ActionDescriptor.DisplayName,
-                Action = string.Format("{0} {1} (Logged By: CustomActionFilter)", filterContext.HttpContext.Request.Method, filterContext.ActionDescriptor.DisplayName)
+                Action = string.Format("TRAIL_FILTER {0} {1}" , filterContext.HttpContext.Request.Method, filterContext.ActionDescriptor.DisplayName)
             };
-            // Save log to DB or log file
         }
     }
 }

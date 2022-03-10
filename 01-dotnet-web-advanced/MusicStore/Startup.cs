@@ -47,7 +47,7 @@ namespace MusicStore
                 optionsBuilder
                      .UseSqlServer(connectionString)
                      .EnableSensitiveDataLogging();
-            });
+            }, ServiceLifetime.Singleton);
 
             // Add Identity services to the services container
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -79,9 +79,21 @@ namespace MusicStore
             //ada custom filter
             services.AddScoped<AuditTrailsActionFilter>();
             services.AddScoped<OrderActionFilter>();
+            services.AddScoped<MyCustomActionFilter>();
+            services.AddScoped<MyResultFilter>();
+
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(typeof(MyGlobalActionFilter));
+            });
 
             //DI
-            services.AddScoped<IMusicService, MusicService>();
+            //services.AddScoped<IMusicService, MusicService>(); // different at each request
+
+            services.AddSingleton<IMusicService, MusicService>();
+
+
+
             // Configure Auth
             services.AddAuthorization(options =>
             {
@@ -106,6 +118,7 @@ namespace MusicStore
             app.UseDeveloperExceptionPage();
 
             app.UseDatabaseErrorPage();
+
 
             Configure(app);
         }
@@ -157,14 +170,18 @@ namespace MusicStore
                 });
             });
 
+            // Status code page middleware
 
-            //app.UseExceptionHandler(config => config.UseMiddleware<MyMiddleware2>());
-            app.UseExceptionHandler(config => config.UseMiddleware<MyMiddleware1>());
+            app.UseMiddleware<MyMiddleware1>();
+            app.UseMiddleware<MyMiddleware2>();
+
             //app.UseMiddleware<MyMiddleware1>();
             //app.UseExceptionHandler(new ExceptionHandlerOptions
             //{
             //    ExceptionHandler = new ErrorMiddleware().Invoke
             //});
+            ///app.UseExceptionHandler(c => c.UseMiddleware<MyMiddleware2>());
+            //app.useex(c => c.usemi);
 
             app.Use((context, next) =>
             {
