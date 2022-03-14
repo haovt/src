@@ -175,11 +175,13 @@ namespace MusicStore
             app.UseMiddleware<MyMiddleware1>();
             app.UseMiddleware<MyMiddleware2>();
 
+
+            //app.UseExceptionHandler("/Views/Shared/Error.cshtml");
             //app.UseMiddleware<MyMiddleware1>();
-            //app.UseExceptionHandler(new ExceptionHandlerOptions
-            //{
-            //    ExceptionHandler = new ErrorMiddleware().Invoke
-            //});
+            app.UseExceptionHandler(new ExceptionHandlerOptions
+            {
+                ExceptionHandler = new ErrorMiddleware().Invoke
+            });
             ///app.UseExceptionHandler(c => c.UseMiddleware<MyMiddleware2>());
             //app.useex(c => c.usemi);
 

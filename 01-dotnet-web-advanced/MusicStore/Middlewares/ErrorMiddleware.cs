@@ -35,8 +35,9 @@ namespace MusicStore.Middlewares
                 await context.Response.WriteAsync("ERROR!<br><br>\r\n");
                 await context.Response.WriteAsync("Please Contact your system admin<br><br>\r\n");
 
-                await context.Response.WriteAsync(
-                                                "<a href=\"/\">Home</a><br>\r\n");
+                await context.Response.WriteAsync("<a href=\"/\">Home</a><br>\r\n");
+                await context.Response.WriteAsync("<p>Contact: Admin@elca.vn</p>\r\n");
+                await context.Response.WriteAsync("<p>Tel: 091XXX</p>\r\n");
                 await context.Response.WriteAsync("</body></html>\r\n");
                 await context.Response.WriteAsync(new string(' ', 512));
             }

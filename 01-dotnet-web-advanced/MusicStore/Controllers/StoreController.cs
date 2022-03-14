@@ -60,9 +60,9 @@ namespace MusicStore.Controllers
         {
             if (id == 55555)
             {
-                //throw new Exception("Sample exception.");
-                _logger.LogError("Exception: This song is prohibit, contact Admin for more");
-                return View("~/Views/Shared/Error.cshtml");
+                throw new Exception($"This song (Id={id}) is prohibit, contact Admin for more");
+                //_logger.LogError($"Exception: This song (Id={id}) is prohibit, contact Admin for more");
+                //return View("~/Views/Shared/Error.cshtml");
             }
 
             _logger.LogInformation("File Album detail");
