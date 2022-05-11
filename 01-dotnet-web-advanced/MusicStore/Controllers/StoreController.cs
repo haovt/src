@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -21,11 +23,13 @@ namespace MusicStore.Controllers
         public StoreController(IOptions<AppSettings> options, IMusicService musicService, ILogger<StoreController> logger)
         {
             _appSettings = options.Value;
+            //_musicService = musicService.First();
             _musicService = musicService;
             _logger = logger;
         }
 
         // GET: /Store/
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var genres = await _musicService.BrowseGenres();
@@ -60,7 +64,7 @@ namespace MusicStore.Controllers
         {
             if (id == 55555)
             {
-                throw new Exception($"This song (Id={id}) is prohibit, contact Admin for more");
+                throw new Exception($"This song (Id={id}) is prohibit, contact Admin to know the reasons");
                 //_logger.LogError($"Exception: This song (Id={id}) is prohibit, contact Admin for more");
                 //return View("~/Views/Shared/Error.cshtml");
             }

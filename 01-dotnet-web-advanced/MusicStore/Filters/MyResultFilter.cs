@@ -6,7 +6,7 @@ namespace MusicStore.Filters
     {
         public void OnResultExecuted(ResultExecutedContext context)
         {
-            
+            context.Canceled = true;
         }
 
         public void OnResultExecuting(ResultExecutingContext context)

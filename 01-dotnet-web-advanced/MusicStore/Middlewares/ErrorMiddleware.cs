@@ -30,9 +30,9 @@ namespace MusicStore.Middlewares
                 context.Response.ContentType = "application/json";
 
                 context.Response.ContentType = "text/html";
-
                 await context.Response.WriteAsync("<html lang=\"en\"><body>\r\n");
                 await context.Response.WriteAsync("ERROR!<br><br>\r\n");
+                await context.Response.WriteAsync($"{contextFeature.Error.Message}<br><br>\r\n");
                 await context.Response.WriteAsync("Please Contact your system admin<br><br>\r\n");
 
                 await context.Response.WriteAsync("<a href=\"/\">Home</a><br>\r\n");

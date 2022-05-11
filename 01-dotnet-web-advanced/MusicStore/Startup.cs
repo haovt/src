@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 using MusicStore.Components;
 using MusicStore.Filters;
 using MusicStore.Middlewares;
@@ -82,6 +85,7 @@ namespace MusicStore
             services.AddScoped<MyCustomActionFilter>();
             services.AddScoped<MyResultFilter>();
 
+
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(MyGlobalActionFilter));
@@ -90,9 +94,22 @@ namespace MusicStore
             //DI
             //services.AddScoped<IMusicService, MusicService>(); // different at each request
 
+            //services.AddSingleton<IMusicService, MusicService2>();
             services.AddSingleton<IMusicService, MusicService>();
 
+            //services.
+            //services.AddScoped<IMusicService, MusicService2>();
+            //services.AddScoped<IMusicService, MusicService>();
 
+            // ODATA
+            services.AddControllers().AddOData(opt => opt.AddRouteComponents("odata", GetEdmModel()));
+
+
+            // TryAdd - .Net 5
+            // Life style: 
+            // services.tr
+            // A contain B: B life > A life
+            // A singleton, B scope: B life < A life
 
             // Configure Auth
             services.AddAuthorization(options =>
@@ -152,6 +169,7 @@ namespace MusicStore
             // force the en-US culture, so that the app behaves the same even on machines with different default culture
             var supportedCultures = new[] { new CultureInfo("en-US") };
 
+
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture("en-US"),
@@ -174,7 +192,7 @@ namespace MusicStore
 
             app.UseMiddleware<MyMiddleware1>();
             app.UseMiddleware<MyMiddleware2>();
-
+            //app.UseMiddleware<MessageHandler1>();
 
             //app.UseExceptionHandler("/Views/Shared/Error.cshtml");
             //app.UseMiddleware<MyMiddleware1>();
@@ -237,6 +255,15 @@ namespace MusicStore
 
             //Populates the MusicStore sample data
             SampleData.InitializeMusicStoreDatabaseAsync(app.ApplicationServices).Wait();
+        }
+
+        private static IEdmModel GetEdmModel()
+        {
+            ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+            builder.EntitySet<Album>("Albums");
+            builder.EntitySet<Artist>("Artists");
+            builder.EntitySet<Genre>("Genres");
+            return builder.GetEdmModel();
         }
     }
 }

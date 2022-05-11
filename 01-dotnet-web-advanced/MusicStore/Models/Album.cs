@@ -11,8 +11,10 @@ namespace MusicStore.Models
         [ScaffoldColumn(false)]
         public int AlbumId { get; set; }
 
+        [ForeignKey("Genre")]
         public int GenreId { get; set; }
 
+        [ForeignKey("Artist")]
         public int ArtistId { get; set; }
 
         [Required]
