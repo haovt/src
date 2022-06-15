@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.OData.ModelBuilder;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MusicStore.Models
 {
@@ -12,6 +14,9 @@ namespace MusicStore.Models
 
         public string Description { get; set; }
 
+        [Contained]
         public List<Album> Albums { get; set; }
+
+        //public BaseModelType BaseModelType { get; set; }
     }
 }

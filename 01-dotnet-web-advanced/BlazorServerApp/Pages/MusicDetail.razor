@@ -1,0 +1,32 @@
+﻿@page "/musicdetail/{Id:int}"
+@using BlazorServerApp.Data
+
+@inject MusicService MusicService
+
+<div class="jumbotron" style="text-align:center">
+    <img src="/Images/home-showcase.png" />
+</div>
+
+@if (song == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h2>@song.Name</h2>
+    <h4>Id: @song.Id</h4>
+    <h4>Price: @song.Price $</h4>
+
+            <button>Edit</button>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Song song;
+
+    protected override async Task OnInitializedAsync()
+    {
+        song = await MusicService.GetSongById(Id);
+    }
+}

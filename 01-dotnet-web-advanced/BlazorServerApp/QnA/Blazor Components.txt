@@ -1,0 +1,79 @@
+﻿How many approaches for creating a component?
+- Use HTML + C# code
+- Use other components e.g. use tag <Counter />
+
+How components compiles and renders in Blazor?
+- The rendering logic is captured in a structured way in a .NET class
+- Name of the compiled class is taken from the .razor file name
+- Namespace is taken from the default namespace, can be config
+
+How can we implement event callback on blazor?
+- @on{DOM EVENT}="{DELEGATE}"
+- E.g. <button @onclick="UpdateHeading">  
+    private void UpdateHeading()
+    {
+        currentHeading = $"{newHeading}!!!";
+    }
+- Support Async
+- Support EvntArgs: pass arg to method (https://docs.microsoft.com/en-us/aspnet/core/blazor/components/event-handling?view=aspnetcore-6.0)
+
+What's the life cycles method of a component
+- OnInitialized(Async): when the component is initialized
+- OnParametersSet(Async): when the component has received the parameter from parent component.
+- ShouldRender: True => UI is refreshed. Otherwise, changes are not sent to the UI. always does the initial rendering despite its return value
+- OnAfterRender(Async)(bool firstRender): when the rendering of all the references to the component are populated
+
+How can we debug blazor web assembly and blazor server?
+- Web assembly: 
+    - Debug in Razor files: like normal app debug
+    - Browser: enable remote debugging (https://docs.microsoft.com/en-us/aspnet/core/blazor/debug?view=aspnetcore-6.0&tabs=visual-studio)
+- Server: like normal app debug
+
+How to call java script from NET and via versa?
+- JS - NET: 
+@inject IJSRuntime JS
+
+    private async Task ConvertArray()
+    {
+        text = new(await JS.InvokeAsync<string>("convertArray", quoteArray));
+        // InvokeVoidAsync without returned value
+    }
+
+    <script>
+      window.convertArray = (win1251Array) => {
+        // Do st
+      };
+    </script>
+- NET - JS:
+Statis method:
+@code {
+    [JSInvokable]
+    public static Task<int[]> ReturnArrayAsync()
+    {
+        return Task.FromResult(new int[] { 1, 2, 3 });
+    }
+}
+
+    <button onclick="returnArrayAsync()">
+
+Instance method: (several ways) e.g.
+  - Pass DotNetObjectReference to individual  JavaScript functions
+  window.sayHello1 = (dotNetHelper) => {
+    return dotNetHelper.invokeMethodAsync('GetHelloMessage');
+  };
+  - Pass DotNetObjectReference to class with multiple JavaScript functions
+
+   dotNetHelper = DotNetObjectReference.Create(this);
+  await JS.InvokeVoidAsync("GreetingHelpers.setDotNetHelper", 
+                dotNetHelper);
+
+  - Call .NET generic class methods
+
+How to call Web API from WebAssembly?
+@inject IHttpClientFactory ClientFactory
+@code {
+        var client = ClientFactory.CreateClient();
+        var response = await client.SendAsync(request);
+        // ...
+}
+

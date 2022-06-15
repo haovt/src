@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.OData.ModelBuilder;
 
 namespace MusicStore.Models
 {
@@ -11,7 +12,7 @@ namespace MusicStore.Models
         [ScaffoldColumn(false)]
         public int AlbumId { get; set; }
 
-        [ForeignKey("Genre")]
+        [ForeignKey("Genre")] // Relation: navigate fro Album to Genre
         public int GenreId { get; set; }
 
         [ForeignKey("Artist")]

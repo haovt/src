@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -89,6 +90,8 @@ namespace MusicStore
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add(typeof(MyGlobalActionFilter));
+            }).AddJsonOptions(opt => {
+                opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             });
 
             //DI
@@ -102,8 +105,8 @@ namespace MusicStore
             //services.AddScoped<IMusicService, MusicService>();
 
             // ODATA
-            services.AddControllers().AddOData(opt => opt.AddRouteComponents("odata", GetEdmModel()));
-
+            services.AddControllers().AddOData(opt => opt.AddRouteComponents("odata", GetEdmModel()).Filter().Select());
+            //services.AddControllers().AddOData(opt => opt.AddRouteComponents("odata", GetEdmModel()));
 
             // TryAdd - .Net 5
             // Life style: 
@@ -260,9 +263,45 @@ namespace MusicStore
         private static IEdmModel GetEdmModel()
         {
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
+
+            //EntityTypeConfiguration<Genre> window = builder.EntityType<Genre>();
+            //window.HasKey(c => c.GenreId);
+            //window.ComplexProperty(c => c.BaseModelType);
+
+            //ComplexTypeConfiguration<BaseModelType> baseModelType = builder.ComplexType<BaseModelType>();
+            //baseModelType.Property(c => c.ModelType);
+            //baseModelType.Abstract();
+
+            //ComplexTypeConfiguration<ExternalType> externalType = builder.ComplexType<ExternalType>();
+            //externalType.Property(c => c.Export);
+            //externalType.DerivesFrom<BaseModelType>();
+
+            //ComplexTypeConfiguration<InternalType> internalType = builder.ComplexType<InternalType>();
+            //internalType.Property(c => c.InternalName);
+            //internalType.DerivesFrom<BaseModelType>();
+
+            builder.Namespace = "AlbumService";
+            builder.EntityType<Album>()
+                .Action("SetName")
+                .Parameter<string>("NewName");
+
+            builder.EntityType<Album>().Collection
+                .Function("MostExpensive")
+                .Returns<double>();
+
+            // https://localhost:44374/odata
+            builder.Singleton<Genre>("Rock");
+
+            builder.EntitySet<Genre>("Genres");
             builder.EntitySet<Album>("Albums");
             builder.EntitySet<Artist>("Artists");
-            builder.EntitySet<Genre>("Genres");
+
+
+            var albumType = builder.EntityType<Album>();
+            var functionConfiguration = albumType.Collection.Function("GetCount");
+            functionConfiguration.Parameter<string>("NameContains");
+            functionConfiguration.Returns<int>();
+
             return builder.GetEdmModel();
         }
     }

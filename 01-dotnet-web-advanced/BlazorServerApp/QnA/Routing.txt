@@ -1,0 +1,29 @@
+﻿How can we navigate and pass parameter between routes?
+Using Router component
+<Router AppAssembly="@typeof(Program).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <p>Sorry, there's nothing at this address.</p>
+    </NotFound>
+
+    or 
+    <Custom404Page/>
+</Router>
+
+Pass params:
+
+@page "/RouteParameter/{text}"
+
+<h1>Blazor is @Text!</h1>
+
+@page "/user/{Id:int}"  // constraint on param type
+
+<h1>User Id: @Id</h1>
+
+How can we implement a custom 404 page on blazor?
+
+
+
+

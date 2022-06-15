@@ -1,0 +1,38 @@
+﻿@page "/musicstore"
+@using BlazorServerApp.Data
+
+@inject MusicService MusicService
+
+<div class="jumbotron" style="text-align:center">
+    <img src="/Images/home-showcase.png" />
+</div>
+
+@if (songs == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul class="row list-unstyled" id="album-list">
+    @foreach (var s in songs)
+    {
+    <li class="col-lg-2 col-md-2 col-sm-2 col-xs-4 container">
+        <a href="/musicdetail/@s.Id">
+            <img src="/Images/logo.png" />
+            <h5>@s.Name</h5>
+        </a>
+    </li>
+    }
+    </ul>
+
+       <button>Add</button>
+}
+
+@code {
+    private Song[] songs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        songs = await MusicService.GetSongs();
+    }
+}
